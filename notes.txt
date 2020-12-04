@@ -1,0 +1,61 @@
+We did not cover indexes over MongoDB in lectures. In this project, the team will self study the indexing capabilities in MongoDB, build a large repository of collection, and create different types of indexes on this collection. 
+
+The team is expected to present: (1) an overview on MongoDB indexing framework, (2) their implementation and what type of indexes they studied, and (3) experimental results on the effectiveness of each index and its storage overheads. These results should be on at least three datasets of different sizes, e.g., 1 million document, 10 million documents, and 50 million documents.  The team should look for large datasets or write their own data generator.
+
+Reference:Refer to Chapter 8& Chapter 11.8in the MongoDB manual 
+
+
+General notes:
+
+method: compound index
+https://docs.mongodb.com/manual/core/index-compound/#index-ascending-and-descending
+https://docs.mongodb.com/manual/tutorial/sort-results-with-indexes/#sort-on-multiple-fields
+Look at examples in first link for ways to test compound indicies
+
+method: multikey index
+use cases: query to select docs that contain arrays by matching array element(s)
+
+method: hash index
+
+Investiage ways that normal indexes (single and compound) are used and can be optimized
+https://docs.mongodb.com/manual/applications/indexes/
+https://stackoverflow.com/questions/33545339/how-does-the-order-of-compound-indexes-matter-in-mongodb-performance-wise
+https://emptysqua.re/blog/optimizing-mongodb-compound-indexes/
+
+- Prefixes
+	- if index is {a:1, b:1, c:1}, can still query on a and c but is not as efficient as if the index were just {a:1, 	c:1}. How much less efficient?
+- Ensure index fits in RAM
+- Indices with different levels of selectivity
+
+
+
+
+Experimental plan:
+
+- Test the efficiency of different queries on single vs compound indices. Examine execution time for each query, and storage overhead when using each type of index
+	- Queries
+		- query using single unindexed field
+		- query using same field but indexed
+		- query using indexed field and one unindexed field
+		- query using compound index on both fields
+		- query using a compound index on three fields but only use first and last fields
+	- Experiments
+		- performance of find (equals to) query
+			- run all above queries using indices with high cardinality (i.e. name or phone)
+			- run all above queries using indicies with low cardinality (i.e. sex or country)
+				- in compound index, try using one field of low and one field of high cardinality
+				- test with low cardinality index first vs last
+		- performance of sort by and group by query
+			- run on all above queries
+			- when using two fields in compound, index using sort orders of {a:1, b:1} and {a:1, b:-1} and {a:-1, b:-1}
+				- sort by a
+				- sort by b
+		- performance of range comparison (greater than, less than)
+			- find query with range comparison using single field index
+			- find query with range comparison using hash index on same field 
+				- (should be slower as hash index does not support range compare)
+		- maybe experiments involving matching element in array if we have time
+	- Database structure
+                  str   binary str    int           int
+		- name, sex,   email, phone number, salary
+		- some fields should have same values, ex multiple people named John Smith (?)
