@@ -23,7 +23,7 @@ https://stackoverflow.com/questions/33545339/how-does-the-order-of-compound-inde
 https://emptysqua.re/blog/optimizing-mongodb-compound-indexes/
 
 - Prefixes
-	- if index is {a:1, b:1, c:1}, can still query on a and c but is not as efficient as if the index were just {a:1, 	c:1}. How much less efficient?
+	- if index is {a:1, b:1, c:1}, can still query on a and c but is not as efficient as if the index were just {a:1, c:1}. How much less efficient?
 - Ensure index fits in RAM
 - Indices with different levels of selectivity
 
@@ -56,6 +56,6 @@ Experimental plan:
 				- (should be slower as hash index does not support range compare)
 		- maybe experiments involving matching element in array if we have time
 	- Database structure
-                  str   binary str    int           int
-		- name, sex,   email, phone number, salary
+		- name, sex, email, phone number, salary
+		- [str, str], categorical M/F/NB, str, int, int
 		- some fields should have same values, ex multiple people named John Smith (?)

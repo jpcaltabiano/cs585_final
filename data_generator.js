@@ -1,29 +1,21 @@
 const faker = require("faker");
 const { MongoClient } = require("mongodb");
 
-
-var randomName = faker.name.findName(); // Caitlyn Kerluke
-var randomEmail = faker.internet.email(); // Rusty@arne.info
-var randomCard = faker.helpers.createCard(); // random contact card containing many properties
-
-console.log(randomName, randomEmail, randomCard);
-
-
-
-// async function listDatabases(client) {
-//   databasesList = await client.db().admin().listDatabases();
-
-//   console.log("Databases:");
-//   databasesList.databases.forEach((db) => console.log(` - ${db.name}`));
-// }
+/**
+ * See faker.js source https://github.com/Marak/faker.js
+ * For things like names, faker pulls from a list of existing names. 
+ * For example, there are about 3000 English-languge first names. 
+ * Therefore, for large collections, the names will repeat often.
+ * However, unique combinations of first and last name will be more rare
+ */
 
 async function main() {
   const uri = "mongodb://127.0.0.1:27017/?gssapiServiceName=mongodb";
   const client = new MongoClient(uri);
 
   try {
-    await client.connect();
-    await generate_collections(client);
+    await client.connect({ useUnifiedTopology: true });
+    await gen_collections(client);
 
   } catch (e) {
     console.error(e);
@@ -32,26 +24,49 @@ async function main() {
   }
 };
 
-async function generate_collections(client) {
+function gen_document() {
+  let genders = ['M', 'F', 'NB'];
+  let firstName = faker.name.firstName();
+  let lastName = faker.name.lastName();
+  let gender = genders[Math.floor(Math.random() * genders.length)];
+  let email = faker.internet.email();
+  let phone = faker.phone.phoneNumber();
+  let salary = faker.finance.amount();
+
+  return {
+    firstname: firstName,
+    lastname: lastName,
+    gender: gender,
+    email: email,
+    phone: phone,
+    salary: salary
+  }
+}
+
+async function gen_collections(client) {
   let db = client.db('test');
-  db.listCollections().toArray(function(err, col) { console.log(col) });
 
-  let collection = db.collection('foobar');
-  let doc1 = {'hello': 'world'};
-  collection.insert(doc1);
+  let small  = 1000000  // 1 mil
+  let medium = 10000000 // 10 mil
+  let large  = 50000000 // 50 mil
 
-  db.listCollections().toArray(function(err, col) { console.log(col) });
+  let collection = db.collection('small');
+  for (let i = 0; i < small; i++) {
+    collection.insertOne(gen_document());
+  }
+
+  let collection = db.collection('medium');
+  for (let i = 0; i < medium; i++) {
+    collection.insertOne(gen_document());
+  }
+
+  let collection = db.collection('large');
+  for (let i = 0; i < large; i++) {
+    collection.insertOne(gen_document());
+  }
+
+  // console.log(collection.find().forEach((r) => {console.log(r)}));
 
 };
 
 main().catch(console.error);
-
-
-
-
-// MongoClient.connect("mongodb://127.0.0.1:27017/?gssapiServiceName=mongodb/", function(err, db) {
-//   if (err) {return console.dir(err)}
-//   console.log(db)
-//   // db.collection('test1', {autoIndexId: false}, function(err, collection) {})
-
-// })
