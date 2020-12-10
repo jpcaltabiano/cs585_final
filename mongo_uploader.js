@@ -1,9 +1,5 @@
-const faker = require("faker");
 const { MongoClient } = require("mongodb");
 const fs = require("fs");
-const JSONStream = require("JSONStream");
-const StreamArray = require("stream-json/streamers/StreamArray");
-const bjson = require("big-json");
 
 /**
  * See faker.js source https://github.com/Marak/faker.js
@@ -31,20 +27,6 @@ async function main() {
 async function load_collection(client, fname) {
   let db = client.db("test");
   let collection = db.collection(fname);
-
-  // const jsonStream = StreamArray.withParser();
-
-  // tmp = []
-  // jsonStream.on("data", ({ key, value }) => {
-  //   // console.log(key, value);
-  //   tmp.push(value)
-  // });
-
-  // jsonStream.on("end", () => {
-  //   console.log("All done");
-  // });
-
-  // fs.createReadStream(`${fname}.json`).pipe(jsonStream.input);
 
   // insertMany and bulkUpdate limit the number of docs they can write,
   // so we must write in batches of 1000
