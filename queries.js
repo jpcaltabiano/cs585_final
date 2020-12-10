@@ -17,9 +17,12 @@ async function main() {
     await unindexed(collection);
     await name_index(collection);
     await name_phone_index(collection);
+    await name_email_phone_index(collections);
     await name_gender_index(collection);
     await name_gender_inv_index(collection);
-
+    await gender_index(collections);
+    await gender_name_index(collections);
+    await gender_name_inv_index(collections);
 
   } catch (e) {
     console.error(e);
