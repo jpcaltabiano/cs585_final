@@ -2,6 +2,14 @@ const faker = require("faker");
 const fs = require('fs');
 const bjson = require('big-json');
 
+/**
+ * See faker.js source https://github.com/Marak/faker.js
+ * For things like names, faker pulls from a list of existing names.
+ * For example, there are about 3000 English-languge first names.
+ * Therefore, for large collections, the names will repeat often.
+ * However, unique combinations of first and last name will be more rare
+ */
+
 // generate data as json aray and write to local file
 function write_data_to_disk(fname, size) {
   let arr = [];

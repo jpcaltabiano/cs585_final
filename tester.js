@@ -1,3 +1,7 @@
+/**
+ * Test code to generate all the necessary indexes to gather size from Compass
+ */
+
 const { MongoClient } = require("mongodb");
 
 async function main() {
@@ -22,7 +26,5 @@ async function main() {
     await client.close();
   }
 }
-
-
 
 main().catch(console.error);

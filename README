@@ -1,0 +1,23 @@
+data_generator.js:
+    Pass a desired filename (no extension) for the file to be written to and a number of documents
+    node --max-old-space-size=8192 data_generator.js small 1000000
+
+    The program generates documents (number specified on call) and writes them to a json file. Please note that the number of documents cannot be too large. This will vary on system, but the most we were able to generate at one time was 1.5 million. This number is limited by the RAM available to the node heap, and how patient your kernel is when you use that much RAM. To create our 21mil collection we had to generate json files of 1mil at a time. 
+
+mongo_uploader.js:
+    Pass a desired filename (no extension) for the file to be uploaded
+    node --max-old-space-size=8192 mongo_uploader.js small
+
+    The program reads the json file and uploads it to a mongo colelction by the same name. Since this is dealing with massive files, it is again limited by the reasons listed above, as well as the limit on string size that Node has. We were not able to get that code working with a data stream from the json files so we had to intead limit to uploading one file of 1mil documents at a time. 
+
+queries.js:
+    Automates creating and deleting indexes and running queries
+    node queries.js
+
+    This program creates indexes, runs queries, then deletes them and repeats with new indexes. The details of the measuring of time are in the presentation. This likely will not work just as is. Every call to .aggregate() is followed by a call to .toArray() to force the returned cursor to actually search the collection and get results. This only worked on our collection of 1mil documents. Again there are limits with memory usage in both Node and the kernel. Calling .toArray() tries to load the results into memory which builds up quickly. We left this code in to show a history of our work, but the calls will likely not work so they can be commented out. We describe out process for measuring time of aggregate() below.
+
+.mongorc.js:
+    This is the edit we had to make to the .mongorc.js file. It defines a function we can call from the shell.
+
+manual_queries.txt
+    A list of the queries to get the time of execution for the aggregate(). Copy and paste each command into Mongo shell after editing .mongorc.js

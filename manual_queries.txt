@@ -1,0 +1,98 @@
+Group by name with no index
+
+time(() => db.small.aggregate({'$group': {'_id': {'firstname': '$firstname'}}}))
+time(() => db.medium.aggregate({'$group': {'_id': {'firstname': '$firstname'}}}))
+time(() => db.large.aggregate({'$group': {'_id': {'firstname': '$firstname'}}}))
+
+
+
+Group by name with index on name
+Group by gender, name with index on name
+
+db.small.createIndex({firstname:1})
+time(() => db.small.aggregate({'$group': {'_id': {'firstname': '$firstname'}}}))
+time(() => db.small.aggregate({'$group': {'_id': {'gender': '$gender','firstname': '$firstname'}}}))
+db.small.dropIndexes()
+
+db.medium.createIndex({firstname:1})
+time(() => db.medium.aggregate({'$group': {'_id': {'firstname': '$firstname'}}}))
+time(() => db.medium.aggregate({'$group': {'_id': {'gender': '$gender','firstname': '$firstname'}}}))
+db.medium.dropIndexes()
+
+db.large.createIndex({firstname:1})
+time(() => db.large.aggregate({'$group': {'_id': {'firstname': '$firstname'}}}))
+time(() => db.large.aggregate({'$group': {'_id': {'gender': '$gender','firstname': '$firstname'}}}))
+db.large.dropIndexes()
+
+
+
+Group by gender, name with index on gender and name
+
+db.small.createIndex({gender:1, firstname:1})
+time(() => db.small.aggregate({'$group': {'_id': {'gender': '$gender','firstname': '$firstname'}}}))
+db.small.dropIndexes()
+
+db.medium.createIndex({gender:1, firstname:1})
+time(() => db.medium.aggregate({'$group': {'_id': {'gender': '$gender','firstname': '$firstname'}}}))
+db.medium.dropIndexes()
+
+db.large.createIndex({gender:1, firstname:1})
+
+time(() => db.large.aggregate({
+  '$group': {
+    '_id': {
+      'gender': '$gender'
+      'firstname': '$firstname'
+    }
+  }
+}))
+
+db.large.dropIndexes()
+
+
+
+Group by gender, name with index on name and gender
+
+db.small.createIndex({firstname:1, gender:1})
+time(() => db.small.aggregate({'$group': {'_id': {'gender': '$gender','firstname': '$firstname'}}}))
+db.small.dropIndexes()
+
+db.medium.createIndex({firstname:1, gender:1})
+time(() => db.medium.aggregate({'$group': {'_id': {'gender': '$gender','firstname': '$firstname'}}}))
+db.medium.dropIndexes()
+
+db.large.createIndex({firstname:1, gender:1})
+time(() => db.large.aggregate({'$group': {'_id': {'gender': '$gender','firstname': '$firstname'}}}))
+db.large.dropIndexes()
+
+
+
+Group by gender, name with index on name:1 and gender:-1
+
+db.small.createIndex({firstname:1, gender:-1})
+time(() => db.small.aggregate({'$group': {'_id': {'gender': '$gender','firstname': '$firstname'}}}))
+db.small.dropIndexes()
+
+db.medium.createIndex({firstname:1, gender:-1})
+time(() => db.medium.aggregate({'$group': {'_id': {'gender': '$gender','firstname': '$firstname'}}}))
+db.medium.dropIndexes()
+
+db.large.createIndex({firstname:1, gender:-1})
+time(() => db.large.aggregate({'$group': {'_id': {'gender': '$gender','firstname': '$firstname'}}}))
+db.large.dropIndexes()
+
+
+
+Group by gender, name with index on name:-1 and gender:1
+
+db.small.createIndex({firstname:-1, gender:1})
+time(() => db.small.aggregate({'$group': {'_id': {'gender': '$gender','firstname': '$firstname'}}}))
+db.small.dropIndexes()
+
+db.medium.createIndex({firstname:-1, gender:1})
+time(() => db.medium.aggregate({'$group': {'_id': {'gender': '$gender','firstname': '$firstname'}}}))
+db.medium.dropIndexes()
+
+db.large.createIndex({firstname:-1, gender:1})
+time(() => db.large.aggregate({'$group': {'_id': {'gender': '$gender','firstname': '$firstname'}}}))
+db.large.dropIndexes()
